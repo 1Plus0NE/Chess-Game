@@ -1,4 +1,5 @@
 #include "../include/board.h"
+#include "../include/piece.h"
 
 void placePieceRow(Board* board, Color color, int rank){
     board -> squares[0][rank] = inittializePiece(ROOK, color, 0, rank);
@@ -43,4 +44,39 @@ Board* inittializeBoard(){
     board -> playing = WHITE;
 
     return board;
+}
+
+void printBoardWhite(Board* board){
+    for(int j = 7; j >= 0; j--){
+        printf("%d ", j + 1);             // Print rank number
+        for(int i = 0; i < 8; i++){         // Start from 7 to 0 to print ranks from 8 to 1
+            Piece* p = board->squares[i][j];
+            printf("%s ", getPieceSymbol(p));
+        }
+        printf("\n");
+    }
+
+    printf("  a b c d e f g h\n");        // Print file letters
+}   
+
+void printBoardBlack(Board* board){
+    for(int j = 0; j < 8; j++){
+        printf("%d ", j + 1);             // Print rank number
+        for(int i = 7; i >= 0; i--){         // Start from 7 to 0 to print ranks from 8 to 1
+            Piece* p = board->squares[i][j];
+            printf("%s ", getPieceSymbol(p));
+        }
+        printf("\n");
+    }
+
+    printf("  a b c d e f g h\n");        // Print file letters
+}
+
+void printBoard(Board* board){
+    if(board -> playing == WHITE){
+        printBoardWhite(board);
+    }
+    else{
+        printBoardBlack(board);
+    }
 }

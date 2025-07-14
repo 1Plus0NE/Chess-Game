@@ -28,11 +28,13 @@ typedef enum{
 
 /**
  * Structure to represent a chess piece
+ * File represents the row
+ * Rank represents the column
  */
 typedef struct piece{
     PieceType type;
     Color color;
-    int file; // 0 .. 7 || a .. h in chess notation 
+    int file; // 0 .. 7 || a .. h in chess notation
     int rank; // 0 .. 7 || 1 .. 8 in chess notation
 }Piece;
 
@@ -85,8 +87,16 @@ int getPieceFile(Piece* p);
 int getPieceRank(Piece* p);
 
 /**
+ * Returns the Unicode symbol of a chess piece based on its type and color.
+ * 
+ * @param p The pointer to the chess piece structure
+ * @return A UTF-8 encoded string representing the piece's symbol
+ */
+const char* getPieceSymbol(Piece* p);
+
+/**
  * Changes the type of the chess piece
- * This function is used whenever a piece is captured or a pawn is promoted
+ * This function is used whenever a piece is captured, a piece moves or a pawn is promoted
  * 
  * @param p     The pointer to the chess piece structure
  * @param type  The new type of the chess piece
@@ -95,7 +105,7 @@ void setPieceType(Piece* p, PieceType type);
 
 /**
  * Changes the color of the chess piece
- * This function is used when a piece is captured
+ * This function is used whenever a piece is captured or a piece moves
  * 
  * @param p The pointer to the chess piece structure
  */

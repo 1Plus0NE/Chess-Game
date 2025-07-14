@@ -1,4 +1,4 @@
-#include "../include/piece.h";
+#include "../include/piece.h"
 
 /* --- Memory Allocation ---*/
 Piece* inittializePiece(PieceType type, Color color, int file, int rank){
@@ -32,6 +32,29 @@ int getPieceFile(Piece* p){
 
 int getPieceRank(Piece* p){
     return p -> rank;
+}
+
+const char* getPieceSymbol(Piece* p){
+    if(p == NULL || p->type == NONE || p->color == NO_COLOR){
+        return " "; // empty square
+    }
+
+    switch (p->type){
+        case PAWN:
+            return p->color == WHITE ? "♙" : "♟";
+        case KNIGHT:
+            return p->color == WHITE ? "♘" : "♞";
+        case BISHOP:
+            return p->color == WHITE ? "♗" : "♝";
+        case ROOK:
+            return p->color == WHITE ? "♖" : "♜";
+        case QUEEN:
+            return p->color == WHITE ? "♕" : "♛";
+        case KING:
+            return p->color == WHITE ? "♔" : "♚";
+        default:
+            return "?"; // Fallback for unexpected type
+    }
 }
 
 /* --- Setters ---*/

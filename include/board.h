@@ -46,4 +46,19 @@ void placeEmptyPieceRows(Board* board);
  */
 Board* inittializeBoard();
 
+/**
+ * Prints the chess board from the White perspective
+ */
+void printBoardWhite(Board* board);
+
+/**
+ * Prints the chess board from the Black perspective
+ */
+void printBoardBlack(Board* board);
+
+/**
+ * Prints the chess board based on the side playing
+ */
+void printBoard(Board* board);
+
 #endif
