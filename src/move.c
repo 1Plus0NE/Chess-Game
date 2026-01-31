@@ -3,12 +3,13 @@
 int deltaX(Position* from, Position* to){
     return to -> file - from -> file;
 }
+
 int deltaY(Position* from, Position* to){
     return to -> rank - from -> rank;
 }
 
 int isMoveDiagonal(Position* from, Position* to){
-    return abs(to -> rank - from -> rank) == abs(to -> file - from -> file);
+    return abs(deltaX(from, to)) == abs(deltaY(from, to));
 }
 
 int isMoveStraight(Position* from, Position* to){
@@ -63,8 +64,8 @@ int isPathClearDiagonal(Board* board, Position* from, Position* to, int dx, int 
 }
 
 int isPathClear(Board* board, Position* from, Position* to){
-    int dx = to -> file - from -> file;   // horizontal difference (left/right)
-    int dy = to -> rank - from -> rank;   // vertical difference (up/down)
+    int dx = deltaX(from, to);   // horizontal difference (left/right)
+    int dy = deltaY(from, to);   // vertical difference (up/down)
 
     if(isMoveStraight(from, to)){
         return isPathClearStraight(board, from, to, dx, dy);
@@ -106,7 +107,8 @@ int validateBishopMove(Board* board, Move* move){
     return 0;
 }
 
-int validateKnightMove(Board* board, Move* move){
+int isMoveLShape(Board* board, Move* move){
+
     int from_rank = move -> from -> rank;
     int from_file = move -> from -> file;
     int to_rank = move -> to -> rank;
@@ -115,19 +117,97 @@ int validateKnightMove(Board* board, Move* move){
     int dx = abs(to_file - from_file);
     int dy = abs(to_rank - from_rank);
 
-    return (dx == 2 && dy == 1) || (dx == 1 && dy == 2); // verify if it is moving 2 squares in rank or file
+    // Step 1: check if move is an L shape
+    if(!((dx == 2 && dy == 1) || (dx == 1 && dy == 2)))
+        return 0; // invalid geometry
+    
+    // Step 2: retrieve pieces
+    Piece* from_piece = board->squares[from_file][from_rank];
+    Piece* to_piece   = board->squares[to_file][to_rank];
+
+    // Step 3: validate destination
+    if(to_piece->type == NONE)
+        return 1; // empty square, legal move
+    
+
+    if(to_piece->color != from_piece->color) 
+        return 1; // capture enemy piece, legal move
+    
+    // same color piece in destination — illegal
+    return 0;
+
+}
+
+int validateKnightMove(Board* board, Move* move){
+    if(!isMoveOutOfBounds(move -> to)){
+        return isMoveLShape(board, move);
+    }
+    return 0;
 }
 
 int validatePawnMove(Board* board, Move* move){
 
-    // handle piece move (1 square up)
-    // handle piece move (2 squares up), if it is in the initial position AND if there are no squares blocking
-    // handle capture move, if it is up and if it is right or left, use abs for from file and rank for this purpose
+    int from_rank = move -> from -> rank;
+    int from_file = move -> from -> file;
+    int to_rank = move -> to -> rank;
+    int to_file = move -> to -> file;
+
+    int dx = to_file - from_file;
+    int dy = to_rank - from_rank;
+
+    Piece* pawn = board->squares[from_file][from_rank]; // get piece from board
+    // if it is white, its direction is positive, from 1 to 8, otherwise it is black and its direction is negative, from 8 to 1
+    int dir = (pawn->color == WHITE) ? 1 : -1;
+    // get the starting rank of the piece, if it is white it starts in the second position (1), otherwise it is black and starts at the 7th position (6)
+    int start_rank = (pawn->color == WHITE) ? 1 : 6;
+
+    // Destination square
+    Piece* destination = board->squares[to_file][to_rank];
+
+    // First case: One-square forward move
+    if(dx == 0 && dy == dir * 1){
+        // Must be empty
+        if(destination->type == NONE)
+            return 1; 
+        else
+            return 0; // blocked by a piece
+    }
+
+    // Second case: Two-square forward move (only from starting rank)
+    if(dx == 0 && dy == dir * 2){
+        if(from_rank == start_rank){
+            int mid_rank = from_rank + dir; // square in between
+            Piece* middle = board->squares[from_file][mid_rank];
+            // Both must be empty
+            if (middle->type == NONE && destination->type == NONE)
+                return 1; 
+        }
+        return 0; // not from start rank or path blocked
+    }
+
+    // Third case: Diagonal capture
+    if(abs(dx) == 1 && dy == dir * 1){
+        if(destination->type != NONE && destination->color != pawn->color)
+            return 1; 
+        else
+            return 0; // no piece to capture
+    }
+
+    // Invalid move
+    return 0;
 
 }
 
 int validateKingMove(Board* board, Move* move){
-    
+    int from_rank = move -> from -> rank;
+    int from_file = move -> from -> file;
+    int to_rank = move -> to -> rank;
+    int to_file = move -> to -> file;
+
+    int dx = abs(to_file - from_file);
+    int dy = abs(to_rank - from_rank);
+
+    return ((dx == 0 && dy == 1) || (dx == 1 && dy == 0) || (dx == 1 && dy == 1));
 }
 
 int validateMove(Board* board, Move* move){

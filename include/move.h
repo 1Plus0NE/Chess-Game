@@ -114,21 +114,49 @@ int isPathClearDiagonal(Board* board, Position* from, Position* to, int dx, int 
 int isPathClear(Board* board, Position* from, Position* to);
 
 /**
- * Validates a Queen Move
+ * Validates a Queen Move, generally if it is moving horizontally, vertically or diagonally
  * Checks if the move is valid and does not go through chess pieces 
  * 
  * @param board The pointer to the chess board 
- * @param move The pointer to the chess move
+ * @param move  The pointer to the chess move
  * 
  * @return 1 if the move is valid, 0 otherwise
  */
 int validateQueenMove(Board* board, Move* move);
 
-// TO DO
-
+/**
+ * Validates a Rook Move, generally if it is moving horizontally or vertically
+ * Checks if the move is valid and does not go through chess pieces
+ * 
+ * @param board The pointer to the chess board
+ * @param move  The pointer to the chess move
+ * 
+ * @return 1 if the move is valid, 0 otherwise
+ */
 int validateRookMove(Board* board, Move* move);
+
+/**
+ * Validates a Bishop Move, verifying if it is moving vertically
+ * Checks if the move is valid and does not go through chess pieces 
+ * 
+ * @param board The pointer to the chess board
+ * @param move  The pointer to the chess move
+ * 
+ * @return 1 if the move is valid, 0 otherwise
+ */
 int validateBishopMove(Board* board, Move* move);
+
+/**
+ * Validates a Knight Move, verifying if it follows an L shape
+ * Checks if the move is valid and does not go through chess pieces
+ * 
+ * @param board The pointer to the chess board
+ * @param move  The pointer to the chess move
+ * 
+ * @return 1 if the move is valid, 0 otherwise
+ */
 int validateKnightMove(Board* board, Move* move);
+
 int validatePawnMove(Board* board, Move* move);
 int validateKingMove(Board* board, Move* move);
 
